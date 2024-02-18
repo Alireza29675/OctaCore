@@ -1,0 +1,3 @@
+This folder contains the old files of the prototype project which should be refactored and moved out of the prototype folder.
+This project was initially developed in the Arduino IDE and is now being gradually migrated to PlatformIO.
+The purpose of this folder is to facilitate the transition to PlatformIO.
