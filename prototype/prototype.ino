@@ -10,9 +10,11 @@ void setup() {
 
   ledStrip.setup();
   servoMotor.setup();
+  serialCommandHandler.setup();
 }
 
 void loop() {
   webSocketModule.loop();
   servoMotor.loop();
+  serialCommandHandler.loop();
 }

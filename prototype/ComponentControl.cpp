@@ -14,5 +14,5 @@ void updateLEDsFromPayload(uint8_t *payload) {
 }
 
 void setServoAngleFromPayload(uint8_t angle) {
-    servoMotor.setTargetAngle(angle); 
+    servoMotor.setAngle(angle); 
 }
