@@ -34,6 +34,7 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t lengt
             }
             case 3: // Set LED color
             {
+                ledStrip.clear();
                 int numLEDs = (length - 1) * 2;
                 for (int ledIndex = 0; ledIndex < numLEDs && ledIndex < LED_COUNT; ledIndex++) {
                     int byteIndex = 1 + ledIndex / 2;
@@ -59,6 +60,7 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t lengt
                 if (length < 2) return;
                 uint8_t paletteIndex = payload[1];
                 ledStrip.fill(paletteIndex);
+                ledStrip.show();
                 break;
             }
             case 5: // Set brightness
@@ -66,6 +68,7 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t lengt
                 if (length < 2) return;
                 uint8_t brightness = payload[1];
                 ledStrip.setBrightness(brightness);
+                ledStrip.show();
                 break;
             }
         }

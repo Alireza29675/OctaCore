@@ -10,12 +10,12 @@ LEDStripController::LEDStripController() {
 void LEDStripController::setup() {
     FastLED.addLeds<WS2812, LED_DATA_PIN, RGB>(leds, LED_COUNT);
     fill(0);
+    show();
 }
 
 void LEDStripController::fill(uint8_t paletteIndex) {
     CRGB color = colorPalette[paletteIndex];
     fill_solid(leds, LED_COUNT, color);
-    show();
 }
 
 void LEDStripController::setLedColor(int ledIndex, uint8_t paletteIndex) {
@@ -37,7 +37,6 @@ void LEDStripController::setBrightness(uint8_t brightness) {
 
 void LEDStripController::clear() {
     fill_solid(leds, LED_COUNT, CRGB::Black);
-    show();
 }
 
 void LEDStripController::show() {
