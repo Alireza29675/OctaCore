@@ -2,30 +2,33 @@
 
 LEDStripController::LEDStripController() {
     leds = new CRGB[LED_COUNT];
+    for (int i = 0; i < 16; ++i) {
+        colorPalette[i] = CRGB::Red;
+    }
 }
 
 void LEDStripController::setup() {
     FastLED.addLeds<WS2812, LED_DATA_PIN, RGB>(leds, LED_COUNT);
-    fill(10, 10, 10);
+    fill(0);
 }
 
-void LEDStripController::fill(int r, int g, int b) {
-    fill_solid(leds, LED_COUNT, CRGB(r, g, b));
+void LEDStripController::fill(uint8_t brushIndex) {
+    CRGB color = colorPalette[brushIndex];
+    fill_solid(leds, LED_COUNT, color);
     show();
 }
 
-void LEDStripController::setLedColor(int ledIndex, int r, int g, int b) {
+void LEDStripController::setLedColor(int ledIndex, uint8_t brushIndex) {
     if (ledIndex >= 0 && ledIndex < LED_COUNT) {
-        leds[ledIndex] = CRGB(r, g, b);
+        CRGB color = colorPalette[brushIndex];
+        leds[ledIndex] = color;
     }
 }
 
-void LEDStripController::setColor(const int rgbValues[]) {
-    for (int i = 0; i < LED_COUNT; i++) {
-        int idx = i * 3;
-        leds[i] = CRGB(rgbValues[idx], rgbValues[idx + 1], rgbValues[idx + 2]);
+void LEDStripController::setColorPalette(const uint32_t colors[8]) {
+    for (int i = 0; i < 8; ++i) {
+        colorPalette[i] = CRGB(colors[i]);
     }
-    show();
 }
 
 void LEDStripController::setBrightness(uint8_t brightness) {
