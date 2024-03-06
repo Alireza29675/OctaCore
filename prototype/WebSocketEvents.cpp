@@ -4,56 +4,68 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t lengt
     if (type == WStype_BIN) {
         if (length < 1) return;
 
-        uint8_t commandId = payload[0] >> 5; // Extract the first 3 bits for the commandId
+        uint8_t commandId = payload[0];
 
         switch (commandId) {
-            case 0: // Command 000: Rotate servo
+            case 1: // Rotate servo
             {
-                int angle = (payload[0] & 0x1F) << 3 | (payload[1] >> 5);
+                if (length < 2) return;
+                int angle = payload[1];
                 servoMotor.setAngle(angle); 
                 break;
             }
-            case 1: // Command 001: Set brush colors
+            case 2: // Set color palette
             {
-                if (length < 25) return;
-                uint32_t colors[8];
-                for (int i = 0; i < 8; i++) {
+                int numColors = (length - 1) / 3; 
+                uint32_t colors[16];
+                
+                for (int i = 0; i < numColors; i++) {
                     uint32_t color = (payload[1 + i*3] << 16) | (payload[2 + i*3] << 8) | payload[3 + i*3];
                     colors[i] = color;
-                    Serial.print(i);
-                    Serial.print(": ");
-                    Serial.print("(R:");
-                    Serial.print((color >> 16) & 0xFF); // Extract the red component
-                    Serial.print(", G:");
-                    Serial.print((color >> 8) & 0xFF); // Extract the green component
-                    Serial.print(", B:");
-                    Serial.print(color & 0xFF); // Extract the blue component
-                    Serial.println(")");
                 }
+                
+                // Fill the rest of the colors with black
+                for (int i = numColors; i < 16; i++) {
+                    colors[i] = 0x000000; // Black
+                }
+                
                 ledStrip.setColorPalette(colors);
                 break;
             }
-            case 2: // Command 010: Color LED strip by index
+            case 3: // Set LED color
             {
-                int numIndices = (length - 1) * 8 / 3;
-                for (int ledIndex = 0; ledIndex < numIndices && ledIndex < LED_COUNT; ledIndex++) {
-                    int byteIndex = 1 + (ledIndex * 3) / 8;
-                    int bitOffset = (ledIndex * 3) % 8;
-                    uint8_t brushIndex;
-                    if (bitOffset <= 5) {
-                        brushIndex = (payload[byteIndex] >> (5 - bitOffset)) & 0x07;
+                int numLEDs = (length - 1) * 2;
+                for (int ledIndex = 0; ledIndex < numLEDs && ledIndex < LED_COUNT; ledIndex++) {
+                    int byteIndex = 1 + ledIndex / 2;
+                    uint8_t ledData = payload[byteIndex];
+                    
+                    uint8_t paletteIndex;
+                    if (ledIndex % 2 == 0) {
+                        // even index: extract the first 4 bits
+                        paletteIndex = (ledData >> 4) & 0x0F;
                     } else {
-                        brushIndex = ((payload[byteIndex] << (3 + (8 - bitOffset))) | (payload[byteIndex + 1] >> (bitOffset - 5))) & 0x07;
+                        // odd index: extract the last 4 bits
+                        paletteIndex = ledData & 0x0F;
                     }
-                    Serial.print(brushIndex);
-                    ledStrip.setLedColor(ledIndex, brushIndex);
+                    
+                    ledStrip.setLedColor(ledIndex, paletteIndex);
                 }
-                Serial.println();
-                // Set remaining LEDs to brush 0
-                for (int ledIndex = numIndices; ledIndex < LED_COUNT; ledIndex++) {
-                    ledStrip.setLedColor(ledIndex, 0);
-                }
+
                 ledStrip.show();
+                break;
+            }
+            case 4: // Fill LED strip
+            {
+                if (length < 2) return;
+                uint8_t paletteIndex = payload[1];
+                ledStrip.fill(paletteIndex);
+                break;
+            }
+            case 5: // Set brightness
+            {
+                if (length < 2) return;
+                uint8_t brightness = payload[1];
+                ledStrip.setBrightness(brightness);
                 break;
             }
         }

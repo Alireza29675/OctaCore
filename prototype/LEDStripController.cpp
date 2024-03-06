@@ -12,21 +12,21 @@ void LEDStripController::setup() {
     fill(0);
 }
 
-void LEDStripController::fill(uint8_t brushIndex) {
-    CRGB color = colorPalette[brushIndex];
+void LEDStripController::fill(uint8_t paletteIndex) {
+    CRGB color = colorPalette[paletteIndex];
     fill_solid(leds, LED_COUNT, color);
     show();
 }
 
-void LEDStripController::setLedColor(int ledIndex, uint8_t brushIndex) {
+void LEDStripController::setLedColor(int ledIndex, uint8_t paletteIndex) {
     if (ledIndex >= 0 && ledIndex < LED_COUNT) {
-        CRGB color = colorPalette[brushIndex];
+        CRGB color = colorPalette[paletteIndex];
         leds[ledIndex] = color;
     }
 }
 
-void LEDStripController::setColorPalette(const uint32_t colors[8]) {
-    for (int i = 0; i < 8; ++i) {
+void LEDStripController::setColorPalette(const uint32_t colors[16]) {
+    for (int i = 0; i < 16; ++i) {
         colorPalette[i] = CRGB(colors[i]);
     }
 }
