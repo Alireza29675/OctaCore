@@ -1,28 +1,23 @@
-#ifndef ServoController_h
-#define ServoController_h
+#pragma once
 
+#include <Arduino.h>
 #include <ESP32Servo.h>
-#include <EEPROM.h> 
 
 class ServoController {
-public:
-    ServoController(int pin, int eepromAddress);
+ public:
+  explicit ServoController(uint8_t pin);
 
-    void setup();
-    void loop();
+  void setup();
+  void loop();
 
-    void loadAngleFromEEPROM();
-    void saveAngleToEEPROM();
+  void setAngle(int angle);
+  int getAngle() const;
+  int getTargetAngle() const;
 
-    void setTargetAngle(int angle);
-    int getTargetAngle() const;
-
-private:
-    Servo _servo;
-    int _pin;
-    int _targetAngle;
-    int _currentAngle;
-    int _eepromAddress;
+ private:
+  Servo _servo;
+  uint8_t _pin;
+  int _targetAngle;
+  int _currentAngle;
+  unsigned long _lastUpdateTime;
 };
-
-#endif
