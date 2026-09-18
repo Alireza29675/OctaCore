@@ -1,6 +1,12 @@
 #include "Globals.h"
+#include "Config.h"
 
-WiFiModule wifiModule("ACCESS_POINT_SSID", "ACCESS_POINT_PASSWORD");
-WebSocketModule webSocketModule(81);
+WiFiModule wifiModule(
+    OctaEnv::DEVICE_NAME,
+    OctaEnv::WIFI_SSID,
+    OctaEnv::WIFI_PASSWORD,
+    OctaEnv::SETUP_AP_PASSWORD);
+
+WebSocketModule webSocketModule(WEBSOCKET_PORT);
 LEDStripController ledStrip;
-ServoController servoMotor(SERVO_DATA_PIN, 0);
+ServoController servoMotor(SERVO_DATA_PIN);
