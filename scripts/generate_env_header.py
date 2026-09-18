@@ -63,11 +63,11 @@ header = f"""#pragma once
 // Generated from .env by scripts/generate_env_header.py.
 // Do not edit or commit this file.
 namespace OctaEnv {{
-inline constexpr const char* DEVICE_NAME = {json.dumps(device_name)};
-inline constexpr const char* WIFI_SSID = {json.dumps(wifi_ssid)};
-inline constexpr const char* WIFI_PASSWORD = {json.dumps(wifi_password)};
-inline constexpr const char* SETUP_AP_PASSWORD = {json.dumps(setup_ap_password)};
-inline constexpr uint16_t WEBSOCKET_PORT = {websocket_port};
+constexpr const char* DEVICE_NAME = {json.dumps(device_name)};
+constexpr const char* WIFI_SSID = {json.dumps(wifi_ssid)};
+constexpr const char* WIFI_PASSWORD = {json.dumps(wifi_password)};
+constexpr const char* SETUP_AP_PASSWORD = {json.dumps(setup_ap_password)};
+constexpr uint16_t WEBSOCKET_PORT = {websocket_port};
 }}  // namespace OctaEnv
 """
 
