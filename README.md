@@ -90,10 +90,10 @@ Keep the shared Wi-Fi credentials in `.env`, then flash each controller with a
 different name:
 
 ```bash
-./scripts/flash_device.sh octacore-1
-./scripts/flash_device.sh octacore-2
-./scripts/flash_device.sh octacore-3
-./scripts/flash_device.sh octacore-4
+bash scripts/flash_device.sh octacore-1
+bash scripts/flash_device.sh octacore-2
+bash scripts/flash_device.sh octacore-3
+bash scripts/flash_device.sh octacore-4
 ```
 
 The script overrides only `DEVICE_NAME` for that build. Your Wi-Fi password
