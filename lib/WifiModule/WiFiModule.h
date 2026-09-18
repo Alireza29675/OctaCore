@@ -1,20 +1,30 @@
-#ifndef WiFiModule_h
-#define WiFiModule_h
+#pragma once
 
-#include <WiFiManager.h>
+#include <Arduino.h>
+#include <ESPmDNS.h>
 #include <WiFi.h>
+#include <WiFiManager.h>
 
 class WiFiModule {
-  public:
-    WiFiModule(const char* apName, const char* apPassword);
-    void connect();
-    void disconnect();
-    void resetSettings();
-    IPAddress getIPAddress();
-    
-  private:
-    const char* _apName;
-    const char* _apPassword;
-};
+ public:
+  WiFiModule(
+      const char* deviceName,
+      const char* wifiSsid,
+      const char* wifiPassword,
+      const char* setupApPassword);
 
-#endif
+  void connect();
+  void disconnect();
+  void resetSettings();
+  void startMdns(uint16_t servicePort);
+
+  IPAddress getIPAddress() const;
+
+ private:
+  bool connectDirect();
+
+  const char* _deviceName;
+  const char* _wifiSsid;
+  const char* _wifiPassword;
+  const char* _setupApPassword;
+};

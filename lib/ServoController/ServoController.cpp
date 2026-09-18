@@ -1,56 +1,56 @@
 #include "ServoController.h"
 
-#define MIN_ANGLE 0
-#define MAX_ANGLE 180
-#define MAX_ANGLE_SPEED 5
+#include "Config.h"
 
-ServoController::ServoController(int pin, int eepromAddress) : _pin(pin), _eepromAddress(eepromAddress) { 
-    _targetAngle = 0;
-    _currentAngle = 0;
-    loadAngleFromEEPROM();
-}
+ServoController::ServoController(uint8_t pin)
+    : _pin(pin),
+      _targetAngle(SERVO_START_ANGLE),
+      _currentAngle(SERVO_START_ANGLE),
+      _lastUpdateTime(0) {}
 
 void ServoController::setup() {
-    _servo.attach(_pin);
+  _servo.attach(_pin);
+  _servo.write(_currentAngle);
 }
 
 void ServoController::loop() {
-    if (_currentAngle != _targetAngle) {
-      int difference = abs(_targetAngle - _currentAngle);
+  const unsigned long now = millis();
+  if (now - _lastUpdateTime < SERVO_UPDATE_INTERVAL_MS) {
+    return;
+  }
 
-      if (difference <= MAX_ANGLE_SPEED) {
-          // Snap to target if difference is small
-          _currentAngle = _targetAngle; 
-      } else { 
-          // Normal step-based movement if difference is larger
-          if (_currentAngle < _targetAngle) {
-              _currentAngle += MAX_ANGLE_SPEED;
-          } else {
-              _currentAngle -= MAX_ANGLE_SPEED;
-          }
-      }
+  _lastUpdateTime = now;
 
-      _currentAngle = constrain(_currentAngle, MIN_ANGLE, MAX_ANGLE); 
+  if (_currentAngle == _targetAngle) {
+    return;
+  }
 
-      _servo.write(_currentAngle);
-    } else {
-      saveAngleToEEPROM();  
-    }
+  const int difference = _targetAngle - _currentAngle;
+  const int step = constrain(
+      abs(difference),
+      1,
+      static_cast<int>(SERVO_STEP_DEGREES));
+
+  _currentAngle += difference > 0 ? step : -step;
+  _currentAngle = constrain(
+      _currentAngle,
+      static_cast<int>(SERVO_MIN_ANGLE),
+      static_cast<int>(SERVO_MAX_ANGLE));
+
+  _servo.write(_currentAngle);
 }
 
-void ServoController::setTargetAngle(int angle) {
-    _targetAngle = angle;
+void ServoController::setAngle(int angle) {
+  _targetAngle = constrain(
+      angle,
+      static_cast<int>(SERVO_MIN_ANGLE),
+      static_cast<int>(SERVO_MAX_ANGLE));
+}
+
+int ServoController::getAngle() const {
+  return _currentAngle;
 }
 
 int ServoController::getTargetAngle() const {
-    return _targetAngle;
-}  
-
-void ServoController::loadAngleFromEEPROM() {
-    _targetAngle = EEPROM.read(_eepromAddress);
-    _currentAngle = _targetAngle; // Start from stored angle
-}
-
-void ServoController::saveAngleToEEPROM() {
-    EEPROM.write(_eepromAddress, _currentAngle);
+  return _targetAngle;
 }
