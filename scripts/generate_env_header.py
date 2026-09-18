@@ -5,6 +5,27 @@ from pathlib import Path
 
 Import("env")
 
+# PlatformIO compiles registry libraries in isolated contexts. WebSockets
+# includes ESP32 framework headers (WiFi.h, WiFiClientSecure.h, FS.h) but its
+# package metadata does not declare those built-in dependencies. Expose the
+# framework include directories globally instead of patching third-party code.
+framework_dir = Path(
+    env.PioPlatform().get_package_dir("framework-arduinoespressif32")
+)
+framework_library_dirs = [
+    framework_dir / "libraries" / "WiFi" / "src",
+    framework_dir / "libraries" / "WiFiClientSecure" / "src",
+    framework_dir / "libraries" / "FS" / "src",
+]
+
+env.Append(
+    CPPPATH=[
+        str(path)
+        for path in framework_library_dirs
+        if path.exists()
+    ]
+)
+
 project_dir = Path(env["PROJECT_DIR"])
 env_file = project_dir / ".env"
 output_file = project_dir / "include" / "EnvGenerated.h"
