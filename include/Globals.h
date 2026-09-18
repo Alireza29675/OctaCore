@@ -1,5 +1,4 @@
-#ifndef Globals_h
-#define Globals_h
+#pragma once
 
 #include "LEDStripController.h"
 #include "ServoController.h"
@@ -10,5 +9,3 @@ extern WiFiModule wifiModule;
 extern WebSocketModule webSocketModule;
 extern LEDStripController ledStrip;
 extern ServoController servoMotor;
-
-#endif
