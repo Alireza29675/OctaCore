@@ -1,43 +1,55 @@
 #include "LEDStripController.h"
 
 LEDStripController::LEDStripController() {
-    leds = new CRGB[LED_COUNT];
+  for (uint8_t i = 0; i < COLOR_PALETTE_SIZE; ++i) {
+    _colorPalette[i] = CRGB::Black;
+  }
 }
 
 void LEDStripController::setup() {
-    FastLED.addLeds<WS2812, LED_DATA_PIN, RGB>(leds, LED_COUNT);
-    FastLED.setBrightness(100);
-    fill(10, 10, 10);
+  FastLED.addLeds<WS2812, LED_DATA_PIN, RGB>(_leds, LED_COUNT);
+  FastLED.setBrightness(DEFAULT_LED_BRIGHTNESS);
+  clear();
+  show();
 }
 
-void LEDStripController::fill(int r, int g, int b) {
-    fill_solid(leds, LED_COUNT, CRGB(r, g, b));
-    show();
+bool LEDStripController::isValidPaletteIndex(uint8_t paletteIndex) const {
+  return paletteIndex < COLOR_PALETTE_SIZE;
 }
 
-void LEDStripController::setLedColor(int ledIndex, int r, int g, int b) {
-    if (ledIndex >= 0 && ledIndex < LED_COUNT) {
-        leds[ledIndex] = CRGB(r, g, b);
-    }
+void LEDStripController::fill(uint8_t paletteIndex) {
+  if (!isValidPaletteIndex(paletteIndex)) {
+    return;
+  }
+
+  fill_solid(_leds, LED_COUNT, _colorPalette[paletteIndex]);
 }
 
-void LEDStripController::setColor(const int rgbValues[]) {
-    for (int i = 0; i < LED_COUNT; i++) {
-        int idx = i * 3;
-        leds[i] = CRGB(rgbValues[idx], rgbValues[idx + 1], rgbValues[idx + 2]);
-    }
-    show();
+void LEDStripController::setLedColor(
+    uint16_t ledIndex,
+    uint8_t paletteIndex) {
+  if (ledIndex >= LED_COUNT || !isValidPaletteIndex(paletteIndex)) {
+    return;
+  }
+
+  _leds[ledIndex] = _colorPalette[paletteIndex];
+}
+
+void LEDStripController::setColorPalette(
+    const uint32_t colors[COLOR_PALETTE_SIZE]) {
+  for (uint8_t i = 0; i < COLOR_PALETTE_SIZE; ++i) {
+    _colorPalette[i] = CRGB(colors[i]);
+  }
 }
 
 void LEDStripController::setBrightness(uint8_t brightness) {
-    FastLED.setBrightness(brightness);
+  FastLED.setBrightness(brightness);
 }
 
 void LEDStripController::clear() {
-    fill_solid(leds, LED_COUNT, CRGB::Black);
-    show();
+  fill_solid(_leds, LED_COUNT, CRGB::Black);
 }
 
 void LEDStripController::show() {
-    FastLED.show();
+  FastLED.show();
 }
