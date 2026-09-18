@@ -84,8 +84,17 @@ Binary WebSocket messages use the first byte as the command ID:
 For command 3, the even LED is stored in the low nibble and the odd LED in the
 high nibble. This matches `lstudio`.
 
-## Legacy folder
+## Flashing multiple controllers
 
-The `prototype/` directory contains the old Arduino-IDE implementation kept
-for historical reference. The supported firmware is now the PlatformIO code in
-`src/`, `include/`, and `lib/`.
+Keep the shared Wi-Fi credentials in `.env`, then flash each controller with a
+different name:
+
+```bash
+./scripts/flash_device.sh octacore-1
+./scripts/flash_device.sh octacore-2
+./scripts/flash_device.sh octacore-3
+./scripts/flash_device.sh octacore-4
+```
+
+The script overrides only `DEVICE_NAME` for that build. Your Wi-Fi password
+stays in the ignored local `.env` file.
