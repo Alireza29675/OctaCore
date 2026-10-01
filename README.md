@@ -1,6 +1,8 @@
 # OctaCore
 
-ESP32 firmware for up to four LED towers controlled by lstudio.
+ESP32 firmware for up to four LED towers controlled by
+[LStudio](https://github.com/Alireza29675/lstudio), the companion browser playground
+and MIDI Mix controller.
 Towers 1/2 retain the existing left/right identities; towers 3/4 are optional.
 Each board drives 60 WS2812 LEDs on GPIO 5 in RGB order. Servo support is
 disabled in the active build, including its dependency and initialization.
