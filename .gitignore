@@ -4,3 +4,7 @@
 .vscode/launch.json
 .vscode/ipch
 .env
+secrets/*
+!secrets/wifi.example.json
+__pycache__/
+*.pyc

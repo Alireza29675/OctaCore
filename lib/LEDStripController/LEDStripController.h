@@ -2,7 +2,7 @@
 #define LEDStripController_h
 
 #include <FastLED.h>
-#include "Config.h"
+#include "OctaCoreConfig.h"
 
 class LEDStripController {
 public:

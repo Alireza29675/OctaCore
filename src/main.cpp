@@ -4,15 +4,15 @@
 void setup() {
   Serial.begin(115200);
   
+  ledStrip.setup();
   wifiModule.connect();
   webSocketModule.begin();
   webSocketModule.onWebSocketEvent(onWebSocketEvent);
 
-  ledStrip.setup();
-  servoMotor.setup();
 }
 
 void loop() {
   webSocketModule.loop();
-  servoMotor.loop();
+  wifiModule.loop();
+  renderClubFrame();
 }

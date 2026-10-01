@@ -8,6 +8,7 @@ class WebSocketModule {
     WebSocketModule(unsigned int port);
     void begin();
     void loop();
+    bool sendBIN(uint8_t client, uint8_t* payload, size_t length);
     void onWebSocketEvent(void (*event)(uint8_t num, WStype_t type, uint8_t * payload, size_t length));
     
   private:

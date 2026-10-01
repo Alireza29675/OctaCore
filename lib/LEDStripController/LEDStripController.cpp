@@ -7,7 +7,7 @@ LEDStripController::LEDStripController() {
 void LEDStripController::setup() {
     FastLED.addLeds<WS2812, LED_DATA_PIN, RGB>(leds, LED_COUNT);
     FastLED.setBrightness(100);
-    fill(10, 10, 10);
+    clear();
 }
 
 void LEDStripController::fill(int r, int g, int b) {
